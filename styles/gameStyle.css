@@ -10,14 +10,14 @@ body {
 }
 
 #info {
-	height:10%;
+	height:12%;
 	text-align:center;
 	background-color:rgb(211, 230, 245);
 	border-bottom:2px solid black;
 }
 
 #gamePanel {
-	height:89.5%;
+	height:87.5%;
 	text-align:center;
 	background-color:rgb(170, 242, 0);
 }
@@ -29,7 +29,7 @@ body {
 	margin:auto;
 	width: 60%;
 	top:50px;
-	height:250px;
+	height:200px;
 }
 
 #Player2DIV {
@@ -39,5 +39,5 @@ body {
 	width : 60%;
 	background-color:rgb(180, 242, 189);
 	top:100px;
-	height:250px;
+	height:200px;
 }

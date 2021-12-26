@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-
 <?php
-	include 'registerManager.php';
+	include 'register/registerManager.php';
 ?>
 <html>
 	<head>
@@ -29,7 +28,7 @@
 				</table>
 			</form>	
 			
-			<form action = "register.php" style = "text-align:center;">
+			<form action = "register/register.php" style = "text-align:center;">
 				<input  type = "submit" value = "Register!">
 			</form>
 			
