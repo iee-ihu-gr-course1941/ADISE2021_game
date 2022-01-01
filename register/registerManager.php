@@ -17,7 +17,6 @@
 					echo "<div id = 'userCreated'>welcome mr/mrs {$row['username']} </div>";
 					session_start();
 					$_SESSION['usern'] = $_POST["username"];
-					$_SESSION['pass'] = $_POST["password"];
 					
 					header("Location:Game.php");
 					exit();

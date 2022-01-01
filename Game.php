@@ -15,7 +15,7 @@
 				<span id = 'player'>
 					<?php 
 						session_start();
-						echo $_SESSION['usern']; 
+						echo $_SESSION['usern'];
 					?>
 				</span>
 				<br>

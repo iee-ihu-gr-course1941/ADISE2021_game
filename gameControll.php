@@ -19,15 +19,25 @@
 			$user1 = $row["user1"];
 			$sql = "update game set GameStatus = 'started' , user2 = '".$user."' where Gid = '".$gid."'";
 			if ($conn->query($sql) === TRUE) {
-				
 				$sql = "select * from game where user1 = '".$user."' or user2 = '".$user."'";
 				$result = $conn->query($sql);
 				$row = $result->fetch_assoc();
 				echo '{"GameID":"'.$row["Gid"].'","Player1":"'.$row["user1"].'",
-				"Player2":"'.$row["user2"].'","GameStatus":"'.$row["GameStatus"].'"}';
+				"Player2":"'.$row["user2"].'","GameStatus":"'.$row["GameStatus"].'"';
 				$conn->query("update cards set user = '".$row["user2"]."'
 					where Gid = ".$row["Gid"]." and user = 'player2'");
-				//now we pass the deck to users and the game begins
+				
+				//now we pass the deck to user 2 and the game begins
+				$sql = "select * from cards where user = '".$user."' and Gid = '".$row["Gid"]."'";
+				$result = $conn->query($sql);
+				$i = 0;
+				while ($row = $result->fetch_assoc()) {
+					$deck[$i] = $row["CardName"];
+					$i++;
+				}
+				
+				echo ',"DECK":'.json_encode($deck).'}';
+				
 			} else
 				echo "<br>Error: " . $sql . "<br>" . $conn->error;
 		}
@@ -47,6 +57,7 @@
 			for ($i=0; $i<count($Numbers) ; $i++) 
 				for ($j=0; $j<count($Suits) ; $j++) 
 					$deck[$k++] = $Numbers[$i].$Suits[$j];
+			$deck[$k] = "KC";
 			shuffle($deck);
 			$N = count($deck);
 			//insert the deck into the database.
@@ -56,12 +67,30 @@
 				$conn->query("insert into cards(Gid,user,CardName) 
 							values(".$row["Gid"].",'player2','".$deck[$i+1]."')");
 			}
+			if (rand(0,100) > 50) {
+				$conn->query("insert into cards(Gid,user,CardName) 
+							values(".$row["Gid"].",'".$row["user1"]."','".$deck[$i]."')");
+			}
+			else{
+				$conn->query("insert into cards(Gid,user,CardName) 
+							values(".$row["Gid"].",'".$row["user2"]."','".$deck[$i]."')");
+			}
 		}
 	}
 	else {
 		$row = $result->fetch_assoc();
 		echo '{"GameID":"'.$row["Gid"].'","Player1":"'.$row["user1"].'",
-		"Player2":"'.$row["user2"].'","GameStatus":"'.$row["GameStatus"].'"}';
+		"Player2":"'.$row["user2"].'","GameStatus":"'.$row["GameStatus"].'"';
+		$sql = "select * from cards where user = '".$user."' and Gid = '".$row["Gid"]."'";
+		$result = $conn->query($sql);
+		$i = 0;
+		while ($row = $result->fetch_assoc()) {
+			$deck[$i] = $row["CardName"];
+			$i++;
+		}
+		
+		echo ',"DECK":'.json_encode($deck).'}';
+		
 	}
 	
 	$conn->close();
