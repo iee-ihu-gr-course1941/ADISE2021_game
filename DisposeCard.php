@@ -12,9 +12,6 @@
 		and CardName = '".$cards[$i]."' ";
 		$conn->query($sql);	
 	}
-	
-	echo $_GET["card"];
-	echo $_GET["gameID"];
-	
+
 	$conn->close();
 ?>

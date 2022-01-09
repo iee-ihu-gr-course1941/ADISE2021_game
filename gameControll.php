@@ -22,7 +22,7 @@
 				$sql = "select * from game where user1 = '".$user."' or user2 = '".$user."'";
 				$result = $conn->query($sql);
 				$row = $result->fetch_assoc();
-				echo '{"GameID":"'.$row["Gid"].'","Player1":"'.$row["user1"].'",
+				echo '{"turn":"'.$row["turn"].'","GameID":"'.$row["Gid"].'","Player1":"'.$row["user1"].'",
 				"Player2":"'.$row["user2"].'","GameStatus":"'.$row["GameStatus"].'"';
 				$conn->query("update cards set user = '".$row["user2"]."'
 					where Gid = ".$row["Gid"]." and user = 'player2'");
@@ -47,7 +47,7 @@
 			$sql = "select * from game where user1 = '".$user."' or user2 = '".$user."'";
 			$result = $conn->query($sql);
 			$row = $result->fetch_assoc();
-			echo '{"GameID":"'.$row["Gid"].'","Player1":"'.$row["user1"].'",
+			echo '{"turn":"'.$row["turn"].'","GameID":"'.$row["Gid"].'","Player1":"'.$row["user1"].'",
 			"Player2":"'.$row["user2"].'","GameStatus":"'.$row["GameStatus"].'"}';
 			
 			//create a deck for this particular game. 
@@ -73,13 +73,13 @@
 			}
 			else{
 				$conn->query("insert into cards(Gid,user,CardName) 
-							values(".$row["Gid"].",'".$row["user2"]."','".$deck[$i]."')");
+							values(".$row["Gid"].",player2,'".$deck[$i]."')");
 			}
 		}
 	}
 	else {
 		$row = $result->fetch_assoc();
-		echo '{"GameID":"'.$row["Gid"].'","Player1":"'.$row["user1"].'",
+		echo '{"turn":"'.$row["turn"].'","GameID":"'.$row["Gid"].'","Player1":"'.$row["user1"].'",
 		"Player2":"'.$row["user2"].'","GameStatus":"'.$row["GameStatus"].'"';
 		$sql = "select * from cards where user = '".$user."' and Gid = '".$row["Gid"]."'";
 		$result = $conn->query($sql);

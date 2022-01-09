@@ -9,7 +9,7 @@
 	<body>
 		<div id = "container">
 			<div id = "info">
-				<button type = "button" onclick = "checkGames()"> I am ready </button>
+				<button type = "button" onclick = "checkGames(this)"> I am ready </button>
 				<br><br>
 				Player Name : 
 				<span id = 'player'>
