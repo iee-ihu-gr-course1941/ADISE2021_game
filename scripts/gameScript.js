@@ -8,7 +8,7 @@ var dispDECK = [];
 var dispInd = 0;
 var oppCards;
 var obj;
-var ann,wait;
+var ann,wait , prev;
 
 
 function checkGames() {
@@ -26,7 +26,6 @@ function respond() {
 			p2 = document.getElementById("name2");
 			ann = document.getElementById("Announcement");
 			obj = JSON.parse(response); 
-			
 			p1.innerHTML = obj.Player1;
 			p2.innerHTML = obj.Player2;
 			if (obj.GameStatus == "waiting" && !checking) {
@@ -34,6 +33,7 @@ function respond() {
 				checking = true;
 			}
 			if (obj.GameStatus == "started") {
+				prev = 1;
 				clearInterval(CheckInterval); 
 				checking = false;
 				ann.innerHTML = "The game has started !";
@@ -41,9 +41,10 @@ function respond() {
 					ann.innerHTML += "Its your turn <br> <b>choose a card from opponent</b>";
 				else {
 					ann.innerHTML += "Wait for your turn";
-					wait  = setInterval(waitingState,1000);
+					wait  = setInterval(refreshObj,1000);
 				}
 				let C1 , C2;
+				
 				for (let i = 0 ; i < obj.DECK.length ; i++) {
 					for (let j = i + 1 ; j < obj.DECK.length ; j++) {
 						if (obj.DECK[i].length == 2)
@@ -54,13 +55,12 @@ function respond() {
 							C2 = obj.DECK[j].substring(0,1);
 						else
 							C2 = obj.DECK[i].substring(0,2);
-
 						if ( C1 == C2 ) {
 							dispDECK[dispInd++] = obj.DECK[i];
 							dispDECK[dispInd++] = obj.DECK[j];
 							obj.DECK.splice(i,1);
 							obj.DECK.splice(j-1,1);
-							i=0;
+							i=-1;
 							break;
 						}
 					}
@@ -157,17 +157,20 @@ function playCard(event) {
 		xmlHttp4.onreadystatechange = cardPlayedResp;
 		xmlHttp4.send();
 		obj.turn = 2;
-		waitingState();
+		prev = 2;
+		ann.innerHTML = "Wait for your turn";
+		wait  = setInterval(refreshObj,1000);
 	}
 	if (p2.innerHTML == PlayerName.trim() && obj.turn == '2') {
 		var url = "\PlayCard.php?Player=" + p2.innerHTML + "&gameID=" + 
-					+obj.GameID + "&deck=" + JSON.stringify(obj.DECK);
-		
+					+obj.GameID + "&cardN=" + event.target.id;
 		xmlHttp4.open("GET", url, true);
 		xmlHttp4.onreadystatechange = cardPlayedResp;
 		xmlHttp4.send();
 		obj.turn = 1;
-		waitingState();
+		prev = 1;
+		ann.innerHTML = "Wait for your turn";
+		wait  = setInterval(refreshObj,1000);
 	}
 
 }
@@ -177,6 +180,11 @@ function cardPlayedResp() {
 		if (xmlHttp4.status == 200) {
 			var card = xmlHttp4.responseText;
 			//TODO : I DONT ADD THE CARD IF I DONT FIND IT !!!!!!!!!!!!!!
+			console.log("Card selected = " + card);
+			if (card == "KC") {
+				//ADD MOUTZOURIS TO DECK AND REMOVE IT FROM OPPONENT
+				console.log("You got mountzouris");
+			}
 			for (var i = 0 ; i < obj.DECK.length ; i++) {
 				if (obj.DECK[i].length == 2)
 					C1 = obj.DECK[i].substring(0,1);
@@ -190,7 +198,6 @@ function cardPlayedResp() {
 					console.log("Card desposed");
 					removeCardFromTable(obj.DECK[i]);
 					removeEnemyCard(i);
-					console.log(JSON.stringify([obj.DECK[i],card]),obj.GameID);
 					disposeCard(JSON.stringify([obj.DECK[i],card]),obj.GameID);
 				}
 			}
@@ -198,12 +205,10 @@ function cardPlayedResp() {
 	}
 	
 }
-
 function removeCardFromTable(card) {
 	if (p1.innerHTML == PlayerName.trim()) {
 		table1 = document.getElementById("Player1DIV");
 		table1.removeChild(document.getElementById(card));
-		
 	}
 	else if (p2.innerHTML == PlayerName.trim())  {
 		table1 = document.getElementById("Player2DIV");
@@ -215,7 +220,6 @@ function removeEnemyCard(card) {
 	if (p1.innerHTML == PlayerName.trim()) {
 		table1 = document.getElementById("Player2DIV");
 		table1.removeChild(document.getElementById(card));
-		
 	}
 	else if (p2.innerHTML == PlayerName.trim()) {
 		table1 = document.getElementById("Player1DIV");
@@ -223,32 +227,55 @@ function removeEnemyCard(card) {
 	}
 }
 
-function waitingState() {
-	//TODO : ΠΡΕΠΕΙ ΣΥΝΕΧΩΣ ΝΑ ΚΟΙΤΑΖΩ ΑΝ ΑΛΛΑΞΕ Η ΚΑΤΑΣΤΑΣΗ ΤΟΥ ΓΥΡΟΥ ΚΑΙ ΑΝ
-	//ΠΡΕΠΕΙ ΝΑ ΠΕΤΑΞΩ ΚΑΡΤΑ ΓΙΑ ΝΑ ΠΑΙΞΩ
-	
-	if (obj.turn == "1") {
-		console.log("Player1 is playing");
-		
-	}
-	if (obj.turn == "2") {
-		console.log("Player2 is playing");
-	}
-	refreshObj();
-}
+
 
 const xmlHttp5 = new XMLHttpRequest();
 function refreshObj() {
+	console.log("Player"+ obj.turn +" is playing previous:" + prev);	
 	xmlHttp5.open("GET", "\gameINFO.php?username=" + PlayerName, true);
 	xmlHttp5.onreadystatechange = refResp;
 	xmlHttp5.send();
 }
+
+//TODO : need to transfer the KC !!!
+//ADD END OF GAME STATE !
 
 function refResp() {
 	if (xmlHttp5.readyState == 4) {
 		if (xmlHttp5.status == 200) {
 			var response = xmlHttp5.responseText;
 			obj = JSON.parse(response);
+			if (prev == 2 && obj.turn == 1) {
+				ann.innerHTML = "Its your turn,choose a card from opponent";
+				console.log("Turn changed from 2 to 1" + " cards = " + obj.DECK);
+				table1 = document.getElementById("Player1DIV");
+				var cards = document.getElementsByClassName('card');
+				for (let i = 0 ; i < cards.length ; i++) 
+					if (cards[i].id != obj.DECK[i])
+						table1.removeChild(document.getElementById(cards[i].id));
+				prev = 1;
+				if (p1.innerHTML == PlayerName.trim())
+					clearInterval(wait);
+				table2 = document.getElementById("Player2DIV");
+				table2.innerHTML = "";
+				getOpponentCards();
+			}
+			if (prev == 1 && obj.turn == 2) {
+				ann.innerHTML = "Its your turn,choose a card from opponent";
+				console.log("Turn changed from 1 to 2" + " cards = " + obj.DECK);
+				prev = 2;
+				table1 = document.getElementById("Player2DIV");
+				var cards = document.getElementsByClassName('card');
+				for (let i = 0 ; i < cards.length ; i++) 
+					if (cards[i].id != obj.DECK[i])
+						table1.removeChild(document.getElementById(cards[i].id));
+				if (p2.innerHTML == PlayerName.trim())
+					clearInterval(wait);
+				
+				table2 = document.getElementById("Player1DIV");
+				table2.innerHTML = "";
+				getOpponentCards();
+			}
 		}
 	}
 }

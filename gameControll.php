@@ -73,7 +73,7 @@
 			}
 			else{
 				$conn->query("insert into cards(Gid,user,CardName) 
-							values(".$row["Gid"].",player2,'".$deck[$i]."')");
+							values(".$row["Gid"].",'player2','".$deck[$i]."')");
 			}
 		}
 	}

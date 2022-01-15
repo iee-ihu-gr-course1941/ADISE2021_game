@@ -8,22 +8,20 @@
 		echo "error";
 	else if (isset($_POST["username"]) && isset($_POST["password"])) {
 		if ($_POST["username"] != "" and $_POST["password"] != "") {
-			if ($_POST["username"] != "" and $_POST["password"] != "") {
-				$sql = "select username,password from users where 
-					username = '{$_POST["username"]}' and password ='{$_POST["password"]}'";
-				$result = $conn->query($sql);
-				$row = $result->fetch_assoc();
-				if ($result->num_rows >0) {
-					echo "<div id = 'userCreated'>welcome mr/mrs {$row['username']} </div>";
-					session_start();
-					$_SESSION['usern'] = $_POST["username"];
-					
-					header("Location:Game.php");
-					exit();
-				}
-				else
-					echo "<div id = 'errorMess'>Wrong username or password</div>";
+			$sql = "select username,password from users where 
+				username = '{$_POST["username"]}' and password ='{$_POST["password"]}'";
+			$result = $conn->query($sql);
+			$row = $result->fetch_assoc();
+			if ($result->num_rows >0) {
+				echo "<div id = 'userCreated'>welcome mr/mrs {$row['username']} </div>";
+				session_start();
+				$_SESSION['usern'] = $_POST["username"];
+				
+				header("Location:Game.php");
+				exit();
 			}
+			else
+				echo "<div id = 'errorMess'>Wrong username or password</div>";
 		}
 	}
 	else {
