@@ -12,6 +12,7 @@ var ann,wait , prev;
 
 
 function checkGames() {
+	
 	PlayerName = document.getElementById("player").innerHTML;
 	xmlHttp.open("GET", "\gameControll.php?username=" + PlayerName, true);
 	xmlHttp.onreadystatechange = respond;
@@ -21,11 +22,13 @@ function checkGames() {
 function respond() {
 	if (xmlHttp.readyState == 4) {
 		if (xmlHttp.status == 200) {
+			
 			var response = xmlHttp.responseText;
 			p1 = document.getElementById("name1");
 			p2 = document.getElementById("name2");
 			ann = document.getElementById("Announcement");
-			obj = JSON.parse(response); 
+			console.log(response);
+			obj = JSON.parse(response);		
 			p1.innerHTML = obj.Player1;
 			p2.innerHTML = obj.Player2;
 			if (obj.GameStatus == "waiting" && !checking) {
@@ -44,7 +47,7 @@ function respond() {
 					wait  = setInterval(refreshObj,1000);
 				}
 				let C1 , C2;
-				
+				//Αυτοματο πεταμα ζευγων καρτων
 				for (let i = 0 ; i < obj.DECK.length ; i++) {
 					for (let j = i + 1 ; j < obj.DECK.length ; j++) {
 						if (obj.DECK[i].length == 2)
@@ -230,6 +233,7 @@ function removeEnemyCard(card) {
 
 
 const xmlHttp5 = new XMLHttpRequest();
+//απλα κανει ανανεωσει το obj
 function refreshObj() {
 	console.log("Player"+ obj.turn +" is playing previous:" + prev);	
 	xmlHttp5.open("GET", "\gameINFO.php?username=" + PlayerName, true);

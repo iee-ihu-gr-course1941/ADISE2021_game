@@ -1,10 +1,12 @@
 <?php 
-	$user = $_GET["username"];
-	$HOST = "localhost";
+	$HOST = "";
 	$username = "root";
-	$password = "";
+	$password = "147258369a";
 	$DATABASE = "gamedb";
-	$conn = new mysqli($HOST,$username,$password,$DATABASE);
+	$conn = new mysqli($HOST,$username,$password,$DATABASE,null,
+	"/home/student/it/2017/it175061/mysql/run/mysql.sock");
+	$user = $_GET["username"];
+	
 	
 	$sql = "select * from game where user1 = '".$user."' or user2 = '".$user."'";
 	$result = $conn->query($sql);

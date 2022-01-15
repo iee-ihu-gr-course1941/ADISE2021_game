@@ -28,7 +28,7 @@
 				</table>
 			</form>	
 			
-			<form action = "register/register.php" style = "text-align:center;">
+			<form action = "register.php" style = "text-align:center;" method="POST">
 				<input  type = "submit" value = "Register!">
 			</form>
 			

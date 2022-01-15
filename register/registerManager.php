@@ -1,9 +1,11 @@
 <?php
-	$HOST = "localhost";
+	$HOST = "";
 	$username = "root";
-	$password = "";
+	$password = "147258369a";
 	$DATABASE = "gamedb";
-	$conn = new mysqli($HOST,$username,$password,$DATABASE);
+	$conn = new mysqli($HOST,$username,$password,$DATABASE,null,
+	"/home/student/it/2017/it175061/mysql/run/mysql.sock");
+	
 	if ($conn->connect_error)
 		echo "error";
 	else if (isset($_POST["username"]) && isset($_POST["password"])) {

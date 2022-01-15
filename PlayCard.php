@@ -1,13 +1,14 @@
 <?php 
+	$HOST = "";
+	$username = "root";
+	$password = "147258369a";
+	$DATABASE = "gamedb";
+	$conn = new mysqli($HOST,$username,$password,$DATABASE,null,
+	"/home/student/it/2017/it175061/mysql/run/mysql.sock");
 	$user = $_GET["Player"];
 	$gameID = $_GET["gameID"];
 	$cardN = $_GET["cardN"];
 	
-	$HOST = "localhost";
-	$username = "root";
-	$password = "";
-	$DATABASE = "gamedb";
-	$conn = new mysqli($HOST,$username,$password,$DATABASE);
 
 	$sql = "select * from cards where Gid = ".$gameID." and user <> '".$user."'";
 	$result = $conn->query($sql);
